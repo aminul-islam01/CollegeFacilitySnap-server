@@ -58,6 +58,16 @@ async function run() {
         })
 
 
+        app.get('/college', async(req, res) => {
+            const search = req.query.search;
+    
+            const query = {college_name: {$regex: search, $options: 'i'}}
+
+            const result = await collegeCollection.findOne(query);
+            res.send(result);
+        })
+
+
         console.log("You successfully connected to MongoDB!");
     } finally {
         // await client.close();

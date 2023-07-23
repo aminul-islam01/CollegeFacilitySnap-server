@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
@@ -33,6 +33,28 @@ async function run() {
         app.get('/colleges', async(req, res) => {
             const result = await collegeCollection.find().toArray();
             res.send(result);
+        })
+        
+        app.get('/colleges/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: new ObjectId(id)};
+            const result = await collegeCollection.findOne(query);
+            res.send(result);
+        })
+
+        app.get('/admission', async(req, res) => {
+            const colleges = await collegeCollection.find().toArray();
+            
+            const result = colleges.map(college => {
+                const admission = {
+                    collegeId: college._id,
+                    collegeName: college.college_name,
+                    collegeImage: college.college_image,
+                    AdmissionDate: college.admission_dates
+                }
+                return admission
+            })
+            res.send(result)
         })
 
 

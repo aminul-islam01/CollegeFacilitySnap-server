@@ -29,6 +29,7 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
         const collegeCollection = client.db('CollegeDB').collection('colleges')
+        const admissionCollection = client.db('CollegeDB').collection('admissions')
        
         app.get('/colleges', async(req, res) => {
             const result = await collegeCollection.find().toArray();
@@ -65,6 +66,13 @@ async function run() {
 
             const result = await collegeCollection.findOne(query);
             res.send(result);
+        })
+
+        // admissionCollection operation start here
+        app.post('/admission', async(req, res) => {
+            const StudentData = req.body;
+            const result = await admissionCollection.insertOne(StudentData);
+            res.send(result)
         })
 
 

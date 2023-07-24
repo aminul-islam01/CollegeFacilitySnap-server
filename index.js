@@ -75,6 +75,19 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/my-college/:email', async(req, res) => {
+            const email = req.params.email;
+            const query = {email: email}
+            const studentData = await admissionCollection.find(query).toArray();
+            const collegeId = studentData.map(data => data.collegeId);
+
+            // const query2 = {_id: new ObjectId(collegeId.map(id => id))}
+            const query2 = { _id: { $in: collegeId.map(id => new ObjectId(id)) } }
+            const result = await collegeCollection.find(query2).toArray();
+
+            res.send(result)
+        })
+
 
         console.log("You successfully connected to MongoDB!");
     } finally {

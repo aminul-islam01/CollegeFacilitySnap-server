@@ -27,7 +27,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
         const collegeCollection = client.db('CollegeDB').collection('colleges')
         const admissionCollection = client.db('CollegeDB').collection('admissions')
        
@@ -71,6 +71,13 @@ async function run() {
         // admissionCollection operation start here
         app.post('/admission', async(req, res) => {
             const StudentData = req.body;
+            const id = StudentData.collegeId;
+            const query = {collegeId: id}
+            
+            const exist = await admissionCollection.findOne(query);
+            if(exist) {
+                return res.send('already exist');
+            }
             const result = await admissionCollection.insertOne(StudentData);
             res.send(result)
         })
